@@ -1,38 +1,33 @@
 [
   {
-    "name": "Reddit r/forhire",
+    "name": "We Work Remotely Product RSS",
     "type": "rss",
-    "url": "https://www.reddit.com/r/forhire/new/.rss?sort=new",
-    "source_url": "https://www.reddit.com/r/forhire/",
-    "reliability": 60
-  },
-  {
-    "name": "Reddit r/freelance_forhire",
-    "type": "rss",
-    "url": "https://www.reddit.com/r/freelance_forhire/new/.rss?sort=new",
-    "source_url": "https://www.reddit.com/r/freelance_forhire/",
-    "reliability": 55
-  },
-  {
-    "name": "Reddit r/jobbit",
-    "type": "rss",
-    "url": "https://www.reddit.com/r/jobbit/new/.rss?sort=new",
-    "source_url": "https://www.reddit.com/r/jobbit/",
-    "reliability": 60
-  },
-  {
-    "name": "We Work Remotely Programming RSS",
-    "type": "rss",
-    "url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+    "url": "https://weworkremotely.com/categories/remote-product-jobs.rss",
     "source_url": "https://weworkremotely.com/remote-job-rss-feed",
     "reliability": 90
   },
   {
-    "name": "We Work Remotely DevOps RSS",
+    "name": "We Work Remotely Management RSS",
     "type": "rss",
-    "url": "https://weworkremotely.com/categories/remote-devops-sysadmin-jobs.rss",
+    "url": "https://weworkremotely.com/categories/remote-management-and-finance-jobs.rss",
     "source_url": "https://weworkremotely.com/remote-job-rss-feed",
-    "reliability": 90
+    "reliability": 85
+  },
+  {
+    "name": "RemoteJobs.org Product Management API",
+    "type": "json",
+    "url": "https://remotejobs.org/api/v1/jobs?category=product-management&limit=50",
+    "source_url": "https://remotejobs.org/api-access",
+    "reliability": 80,
+    "items_path": "data",
+    "field_map": {
+      "title": "title",
+      "url": "url",
+      "description": "description",
+      "published_at": "posted_at",
+      "budget": "salary_text",
+      "location": "location"
+    }
   },
   {
     "name": "RemoteOK API",
@@ -46,13 +41,14 @@
       "url": "url",
       "description": "description",
       "published_at": "date",
-      "budget": "salary"
+      "budget": "salary",
+      "location": "location"
     }
   },
   {
-    "name": "Remotive API",
+    "name": "Remotive Product API",
     "type": "json",
-    "url": "https://remotive.com/api/remote-jobs?category=software-dev",
+    "url": "https://remotive.com/api/remote-jobs?category=product",
     "source_url": "https://github.com/remotive-com/remote-jobs-api",
     "reliability": 90,
     "items_path": "jobs",
@@ -61,7 +57,24 @@
       "url": "url",
       "description": "description",
       "published_at": "publication_date",
-      "budget": "salary"
+      "budget": "salary",
+      "location": "candidate_required_location"
+    }
+  },
+  {
+    "name": "Remotive All Remote API",
+    "type": "json",
+    "url": "https://remotive.com/api/remote-jobs",
+    "source_url": "https://github.com/remotive-com/remote-jobs-api",
+    "reliability": 80,
+    "items_path": "jobs",
+    "field_map": {
+      "title": "title",
+      "url": "url",
+      "description": "description",
+      "published_at": "publication_date",
+      "budget": "salary",
+      "location": "candidate_required_location"
     }
   }
 ]
