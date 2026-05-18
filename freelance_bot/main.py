@@ -28,6 +28,7 @@ def main() -> int:
         blocked_keywords=settings["blocked_keywords"],
         must_include_any=settings.get("must_include_any", []),
         title_include_any=settings.get("title_include_any", []),
+        location_include_any=settings.get("location_include_any", []),
         scam_keywords=settings.get("scam_keywords", []),
         minimum_source_reliability=int(settings.get("minimum_source_reliability", 0)),
         max_age_days=settings.get("max_age_days"),
