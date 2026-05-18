@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -11,10 +12,17 @@ from .models import Opportunity
 def notify(opportunities: list[Opportunity], report: str) -> list[str]:
     results = []
     if os.getenv("TELEGRAM_BOT_TOKEN") and os.getenv("TELEGRAM_CHAT_ID"):
-        results.append(send_telegram(opportunities))
+        results.append(safe_send("telegram", send_telegram, opportunities))
     if os.getenv("WEBHOOK_URL"):
-        results.append(send_webhook(report))
+        results.append(safe_send("webhook", send_webhook, report))
     return results
+
+
+def safe_send(name: str, sender, payload) -> str:
+    try:
+        return sender(payload)
+    except (OSError, urllib.error.URLError, urllib.error.HTTPError) as exc:
+        return f"{name} failed: {exc}"
 
 
 def send_telegram(opportunities: list[Opportunity]) -> str:
@@ -65,4 +73,3 @@ def telegram_message(opportunities: list[Opportunity]) -> str:
             ]
         )
     return "\n".join(lines)
-
