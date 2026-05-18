@@ -1,0 +1,10 @@
+[project]
+name = "freelance-opportunity-bot"
+version = "0.1.0"
+description = "A configurable freelance opportunity crawler and alert bot."
+requires-python = ">=3.9"
+dependencies = []
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

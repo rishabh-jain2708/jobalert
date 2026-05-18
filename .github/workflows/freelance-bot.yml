@@ -1,0 +1,35 @@
+name: Freelance Opportunity Bot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */3 * * *"
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        run: python -m freelance_bot.main
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: freelance-opportunities
+          path: data/latest_report.md
+          if-no-files-found: warn
+

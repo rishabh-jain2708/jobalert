@@ -1,0 +1,67 @@
+[
+  {
+    "name": "Reddit r/forhire",
+    "type": "rss",
+    "url": "https://www.reddit.com/r/forhire/new/.rss?sort=new",
+    "source_url": "https://www.reddit.com/r/forhire/",
+    "reliability": 60
+  },
+  {
+    "name": "Reddit r/freelance_forhire",
+    "type": "rss",
+    "url": "https://www.reddit.com/r/freelance_forhire/new/.rss?sort=new",
+    "source_url": "https://www.reddit.com/r/freelance_forhire/",
+    "reliability": 55
+  },
+  {
+    "name": "Reddit r/jobbit",
+    "type": "rss",
+    "url": "https://www.reddit.com/r/jobbit/new/.rss?sort=new",
+    "source_url": "https://www.reddit.com/r/jobbit/",
+    "reliability": 60
+  },
+  {
+    "name": "We Work Remotely Programming RSS",
+    "type": "rss",
+    "url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+    "source_url": "https://weworkremotely.com/remote-job-rss-feed",
+    "reliability": 90
+  },
+  {
+    "name": "We Work Remotely DevOps RSS",
+    "type": "rss",
+    "url": "https://weworkremotely.com/categories/remote-devops-sysadmin-jobs.rss",
+    "source_url": "https://weworkremotely.com/remote-job-rss-feed",
+    "reliability": 90
+  },
+  {
+    "name": "RemoteOK API",
+    "type": "json",
+    "url": "https://remoteok.com/api",
+    "source_url": "https://remoteok.com/api",
+    "reliability": 85,
+    "items_path": "$",
+    "field_map": {
+      "title": "position",
+      "url": "url",
+      "description": "description",
+      "published_at": "date",
+      "budget": "salary"
+    }
+  },
+  {
+    "name": "Remotive API",
+    "type": "json",
+    "url": "https://remotive.com/api/remote-jobs?category=software-dev",
+    "source_url": "https://github.com/remotive-com/remote-jobs-api",
+    "reliability": 90,
+    "items_path": "jobs",
+    "field_map": {
+      "title": "title",
+      "url": "url",
+      "description": "description",
+      "published_at": "publication_date",
+      "budget": "salary"
+    }
+  }
+]
