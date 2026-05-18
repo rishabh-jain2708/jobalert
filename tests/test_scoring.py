@@ -1,6 +1,7 @@
 import unittest
 
 from freelance_bot.models import Opportunity
+from freelance_bot.notify import safe_send
 from freelance_bot.scoring import score_one
 from freelance_bot.sources import extract_budget, extract_location
 
@@ -202,6 +203,12 @@ class ScoringTest(unittest.TestCase):
 
         self.assertGreater(score, 0)
         self.assertTrue(any("location match" in reason for reason in reasons))
+
+    def test_notification_errors_do_not_crash_run(self):
+        def broken_sender(_payload):
+            raise OSError("network failed")
+
+        self.assertEqual(safe_send("telegram", broken_sender, []), "telegram failed: network failed")
 
 
 if __name__ == "__main__":
