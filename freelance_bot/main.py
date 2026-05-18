@@ -47,7 +47,9 @@ def main() -> int:
     write_report(settings["report_path"], report)
 
     if not args.dry_run:
-        notify(report_items, report)
+        notification_results = notify(report_items, report)
+        if notification_results:
+            print("\n".join(notification_results))
 
     print(report)
     return 0
