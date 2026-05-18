@@ -22,6 +22,7 @@ def build_report(opportunities: list[Opportunity], errors: list[str] | None = No
                     f"- Reliability: {item.reliability}/100",
                     f"- Score: {item.score}",
                     f"- Budget: {item.budget or 'Not specified'}",
+                    f"- Location: {item.location or 'See listing'}",
                     f"- Published: {item.published_at or 'Unknown'}",
                     f"- Link: {item.url}",
                     f"- Why: {', '.join(item.reasons) if item.reasons else 'Matched filters'}",
