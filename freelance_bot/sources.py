@@ -13,6 +13,7 @@ from .models import Opportunity
 
 USER_AGENT = "freelance-opportunity-bot/0.1 (+https://github.com/)"
 TAG_RE = re.compile(r"<[^>]+>")
+HEADQUARTERS_RE = re.compile(r"\bHeadquarters:\s*(.{1,120})", re.IGNORECASE)
 MONEY_PATTERN = (
     r"(?:\$|usd\s*)\s?\d[\d,]*(?:\.\d{1,2})?(?:\s?[kKmM])?"
     r"(?:\s?-\s?(?:\$|usd\s*)?\d[\d,]*(?:\.\d{1,2})?(?:\s?[kKmM])?)?"
@@ -106,6 +107,7 @@ def parse_rss(source: dict[str, Any], body: str) -> list[Opportunity]:
                     description=clean_description,
                     published_at=normalize_date(published_at),
                     budget=extract_budget(f"{title} {clean_description}"),
+                    location=extract_location(clean_description),
                     source_url=source.get("source_url", source["url"]),
                     reliability=int(source.get("reliability", 50)),
                 )
@@ -126,6 +128,7 @@ def parse_json(source: dict[str, Any], payload: Any) -> list[Opportunity]:
         description = clean_html(str(value_at(item, field_map.get("description", "description")) or ""))
         published_at = str(value_at(item, field_map.get("published_at", "published_at")) or "")
         configured_budget = str(value_at(item, field_map.get("budget", "")) or "").strip()
+        location = str(value_at(item, field_map.get("location", "")) or "").strip()
         if title and url:
             budget = configured_budget or extract_budget(f"{title} {description}")
             opportunities.append(
@@ -136,6 +139,7 @@ def parse_json(source: dict[str, Any], payload: Any) -> list[Opportunity]:
                     description=description,
                     published_at=normalize_date(published_at),
                     budget=budget,
+                    location=location,
                     source_url=source.get("source_url", source["url"]),
                     reliability=int(source.get("reliability", 50)),
                     raw=item,
@@ -171,6 +175,17 @@ def extract_budget(text: str) -> str:
     if not match:
         return ""
     return next(group.strip() for group in match.groups() if group)
+
+
+def extract_location(text: str) -> str:
+    match = HEADQUARTERS_RE.search(text)
+    if not match:
+        return ""
+    value = match.group(1)
+    for marker in (" URL:", " About ", " Description:", " The Role ", " Who We Are ", " Why work "):
+        if marker in value:
+            value = value.split(marker, 1)[0]
+    return value.strip(" -.,")
 
 
 def resolve_items(payload: Any, path: str) -> list[Any]:
