@@ -12,6 +12,7 @@ class Opportunity:
     description: str = ""
     published_at: str = ""
     budget: str = ""
+    location: str = ""
     source_url: str = ""
     reliability: int = 50
     score: int = 0
