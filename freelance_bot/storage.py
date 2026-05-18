@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS opportunities (
     description TEXT NOT NULL,
     published_at TEXT NOT NULL,
     budget TEXT NOT NULL,
+    location TEXT NOT NULL DEFAULT '',
     source_url TEXT NOT NULL DEFAULT '',
     reliability INTEGER NOT NULL DEFAULT 50,
     score INTEGER NOT NULL,
@@ -32,6 +33,7 @@ def init_db(database_path: str) -> sqlite3.Connection:
     connection.execute(SCHEMA)
     ensure_column(connection, "source_url", "TEXT NOT NULL DEFAULT ''")
     ensure_column(connection, "reliability", "INTEGER NOT NULL DEFAULT 50")
+    ensure_column(connection, "location", "TEXT NOT NULL DEFAULT ''")
     return connection
 
 
@@ -43,8 +45,8 @@ def save_new(connection: sqlite3.Connection, opportunities: list[Opportunity]) -
             connection.execute(
                 """
                 INSERT INTO opportunities
-                (id, source, title, url, description, published_at, budget, source_url, reliability, score, reasons)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (id, source, title, url, description, published_at, budget, location, source_url, reliability, score, reasons)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     item_id,
@@ -54,6 +56,7 @@ def save_new(connection: sqlite3.Connection, opportunities: list[Opportunity]) -
                     item.description,
                     item.published_at,
                     item.budget,
+                    item.location,
                     item.source_url,
                     item.reliability,
                     item.score,
