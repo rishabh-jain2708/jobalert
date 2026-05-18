@@ -2,7 +2,7 @@ import unittest
 
 from freelance_bot.models import Opportunity
 from freelance_bot.scoring import score_one
-from freelance_bot.sources import extract_budget
+from freelance_bot.sources import extract_budget, extract_location
 
 
 class ScoringTest(unittest.TestCase):
@@ -109,6 +109,99 @@ class ScoringTest(unittest.TestCase):
 
         self.assertEqual(score, 0)
         self.assertEqual(reasons, ["older than 45 days"])
+
+    def test_blocks_jobs_outside_target_location(self):
+        item = Opportunity(
+            source="test",
+            title="Product Manager",
+            url="https://example.com/job",
+            description="Full-time role for a B2B SaaS product.",
+            location="United States",
+        )
+
+        score, reasons = score_one(
+            item,
+            skills=["product manager", "saas"],
+            blocked_keywords=[],
+            must_include_any=[],
+            title_include_any=["product manager"],
+            location_include_any=["india", "apac", "anywhere"],
+        )
+
+        self.assertEqual(score, 0)
+        self.assertEqual(reasons, ["location is outside target regions"])
+
+    def test_rewards_india_product_management_match(self):
+        item = Opportunity(
+            source="test",
+            title="Senior Product Manager",
+            url="https://example.com/job",
+            description="Own product strategy, roadmap, user research, and SaaS analytics.",
+            location="Remote - India",
+            reliability=90,
+        )
+
+        score, reasons = score_one(
+            item,
+            skills=["product strategy", "roadmap", "user research", "saas"],
+            blocked_keywords=[],
+            must_include_any=[],
+            title_include_any=["product manager"],
+            location_include_any=["india", "apac", "anywhere"],
+        )
+
+        self.assertGreaterEqual(score, 80)
+        self.assertTrue(any("location match" in reason for reason in reasons))
+
+    def test_location_matching_does_not_match_inside_words(self):
+        item = Opportunity(
+            source="test",
+            title="Product Manager",
+            url="https://example.com/job",
+            description="Own a specialist product workflow.",
+            location="Berlin",
+            reliability=90,
+        )
+
+        score, reasons = score_one(
+            item,
+            skills=["product manager"],
+            blocked_keywords=[],
+            must_include_any=[],
+            title_include_any=["product manager"],
+            location_include_any=["ist"],
+        )
+
+        self.assertEqual(score, 0)
+        self.assertEqual(reasons, ["location is outside target regions"])
+
+    def test_extracts_rss_headquarters_location(self):
+        self.assertEqual(
+            extract_location("Headquarters: Remote - India URL: https://example.com About us"),
+            "Remote - India",
+        )
+
+    def test_remote_without_specific_location_can_use_description_region(self):
+        item = Opportunity(
+            source="test",
+            title="Product Manager",
+            url="https://example.com/job",
+            description="This role can be done from anywhere in the world.",
+            location="Remote",
+            reliability=90,
+        )
+
+        score, reasons = score_one(
+            item,
+            skills=["product manager"],
+            blocked_keywords=[],
+            must_include_any=[],
+            title_include_any=["product manager"],
+            location_include_any=["anywhere in the world"],
+        )
+
+        self.assertGreater(score, 0)
+        self.assertTrue(any("location match" in reason for reason in reasons))
 
 
 if __name__ == "__main__":
