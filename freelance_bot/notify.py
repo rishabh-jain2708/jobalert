@@ -22,7 +22,17 @@ def safe_send(name: str, sender, payload) -> str:
     try:
         return sender(payload)
     except (OSError, urllib.error.URLError, urllib.error.HTTPError) as exc:
-        return f"{name} failed: {exc}"
+        return f"{name} failed: {describe_notification_error(name, exc)}"
+
+
+def describe_notification_error(name: str, exc: BaseException) -> str:
+    if name == "telegram" and isinstance(exc, urllib.error.HTTPError):
+        if exc.code == 404:
+            return "Telegram API returned 404. Check TELEGRAM_BOT_TOKEN in GitHub Actions secrets."
+        if exc.code == 400:
+            return "Telegram API returned 400. Check TELEGRAM_CHAT_ID and make sure you messaged the bot once."
+        return f"Telegram API returned HTTP {exc.code}: {exc.reason}"
+    return str(exc)
 
 
 def send_telegram(opportunities: list[Opportunity]) -> str:
